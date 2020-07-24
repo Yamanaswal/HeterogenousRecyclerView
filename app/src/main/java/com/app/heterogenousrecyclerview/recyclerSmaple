@@ -1,0 +1,49 @@
+// in this sample, I use an object array to simulate the data of the list.
+// I assume that if the object is a String, it means I should display a header with a basic title.
+// If not, I assume it's a custom model object I created which I will use to bind my normal rows.
+private Object[] myData;
+
+public static final int ITEM_TYPE_NORMAL = 0;
+public static final int ITEM_TYPE_HEADER = 1;
+
+public class MyAdapter extends Adapter<ViewHolder> {
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
+        if (viewType == ITEM_TYPE_NORMAL) {
+            View normalView = LayoutInflater.from(getContext()).inflate(R.layout.my_normal_row, null);
+            return new MyNormalViewHolder(normalView); // view holder for normal items
+        } else if (viewType == ITEM_TYPE_HEADER) {
+            View headerRow = LayoutInflater.from(getContext()).inflate(R.layout.my_header_row, null);
+            return new MyHeaderViewHolder(headerRow); // view holder for header items
+        }
+    }
+
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+        final int itemType = getItemViewType(position);
+
+        if (itemType == ITEM_TYPE_NORMAL) {
+            ((MyNormalViewHolder)holder).bindData((MyModel)myData[position]);
+        } else if (itemType == ITEM_TYPE_HEADER) {
+            ((MyHeaderViewHolder)holder).setHeaderText((String)myData[position]);
+        }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (myData[position] instanceof String) {
+            return ITEM_TYPE_HEADER;
+        } else {
+            return ITEM_TYPE_NORMAL;
+        }
+    }
+
+    @Override
+    public int getItemCount() {
+        return myData.length;
+    }
+}
